@@ -1,10 +1,13 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 import {
+  getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+import {
   getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc,
-  query, where, orderBy
+  query, where
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
-// 1. Substitua os valores abaixo pelas configurações do seu app Web no Firebase.
+// Configuração do aplicativo Web Firebase.
 const firebaseConfig = {
   apiKey: "AIzaSyCfNOef9zfZa-yB_906TJwOQ1fNRhBn0Zg",
   authDomain: "nosql123-71837.firebaseapp.com",
@@ -16,8 +19,16 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 const db = getFirestore(app);
 const alunosRef = collection(db, "alunos");
+
+const loginPainel = document.querySelector("#loginPainel");
+const areaSistema = document.querySelector("#areaSistema");
+const loginForm = document.querySelector("#loginForm");
+const mensagemLogin = document.querySelector("#mensagemLogin");
+const btnEntrar = document.querySelector("#btnEntrar");
+const btnSair = document.querySelector("#btnSair");
 
 const form = document.querySelector("#formAluno");
 const lista = document.querySelector("#lista");
@@ -26,10 +37,66 @@ const tituloForm = document.querySelector("#titulo-form");
 const btnSalvar = document.querySelector("#btnSalvar");
 const btnCancelar = document.querySelector("#btnCancelar");
 
+function avisarLogin(texto, erro = false) {
+  mensagemLogin.textContent = texto;
+  mensagemLogin.classList.toggle("erro", erro);
+}
+
 function avisar(texto, erro = false) {
   mensagem.textContent = texto;
   mensagem.classList.toggle("erro", erro);
 }
+
+function mensagemErroLogin(error) {
+  const codigos = {
+    "auth/invalid-credential": "E-mail ou senha incorretos.",
+    "auth/user-not-found": "Usuário não encontrado.",
+    "auth/wrong-password": "Senha incorreta.",
+    "auth/invalid-email": "Informe um e-mail válido.",
+    "auth/too-many-requests": "Muitas tentativas. Aguarde um pouco e tente novamente.",
+    "auth/network-request-failed": "Falha de conexão. Verifique sua internet."
+  };
+  return codigos[error.code] || "Não foi possível entrar. Confira os dados e tente novamente.";
+}
+
+loginForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  btnEntrar.disabled = true;
+  avisarLogin("Entrando...");
+  try {
+    const email = document.querySelector("#email").value.trim();
+    const senha = document.querySelector("#senha").value;
+    await signInWithEmailAndPassword(auth, email, senha);
+    loginForm.reset();
+    avisarLogin("");
+  } catch (error) {
+    console.error(error);
+    avisarLogin(mensagemErroLogin(error), true);
+  } finally {
+    btnEntrar.disabled = false;
+  }
+});
+
+btnSair.addEventListener("click", async () => {
+  try {
+    await signOut(auth);
+    limparFormulario();
+  } catch (error) {
+    console.error(error);
+    avisar("Não foi possível sair da conta.", true);
+  }
+});
+
+onAuthStateChanged(auth, async (usuario) => {
+  const conectado = Boolean(usuario);
+  loginPainel.classList.toggle("oculto", conectado);
+  areaSistema.classList.toggle("oculto", !conectado);
+  if (conectado) {
+    await listarAlunos();
+  } else {
+    lista.replaceChildren();
+  }
+});
 
 function limparFormulario() {
   form.reset();
@@ -42,6 +109,8 @@ function limparFormulario() {
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
+  if (!auth.currentUser) return;
+
   btnSalvar.disabled = true;
   avisar("Salvando...");
 
@@ -65,13 +134,15 @@ form.addEventListener("submit", async (event) => {
     await listarAlunos();
   } catch (error) {
     console.error(error);
-    avisar("Não foi possível salvar. Confira a configuração e as regras do Firestore.", true);
+    avisar("Não foi possível salvar. Confira as regras do Firestore.", true);
   } finally {
     btnSalvar.disabled = false;
   }
 });
 
 async function listarAlunos() {
+  if (!auth.currentUser) return;
+
   lista.replaceChildren();
   const turma = document.querySelector("#filtroTurma").value.trim().toUpperCase();
   const data = document.querySelector("#filtroData").value;
@@ -80,12 +151,14 @@ async function listarAlunos() {
     const filtros = [];
     if (turma) filtros.push(where("turma", "==", turma));
     if (data) filtros.push(where("dataNascimento", "==", data));
-    filtros.push(orderBy("nome"));
 
-    const consulta = query(alunosRef, ...filtros);
+    const consulta = filtros.length ? query(alunosRef, ...filtros) : alunosRef;
     const resultado = await getDocs(consulta);
+    const alunos = resultado.docs
+      .map((registro) => ({ id: registro.id, ...registro.data() }))
+      .sort((a, b) => (a.nome || "").localeCompare(b.nome || "", "pt-BR"));
 
-    if (resultado.empty) {
+    if (alunos.length === 0) {
       const vazio = document.createElement("p");
       vazio.className = "vazio";
       vazio.textContent = "Nenhum aluno encontrado.";
@@ -93,8 +166,7 @@ async function listarAlunos() {
       return;
     }
 
-    resultado.forEach((registro) => {
-      const aluno = registro.data();
+    alunos.forEach((aluno) => {
       const card = document.createElement("article");
       card.className = "aluno";
 
@@ -114,12 +186,12 @@ async function listarAlunos() {
       const editar = document.createElement("button");
       editar.className = "secundario";
       editar.textContent = "Editar";
-      editar.addEventListener("click", () => iniciarEdicao(registro.id, aluno));
+      editar.addEventListener("click", () => iniciarEdicao(aluno.id, aluno));
 
       const excluir = document.createElement("button");
       excluir.className = "perigo";
       excluir.textContent = "Excluir";
-      excluir.addEventListener("click", () => excluirAluno(registro.id));
+      excluir.addEventListener("click", () => excluirAluno(aluno.id));
 
       botoes.append(editar, excluir);
       card.append(dados, botoes);
@@ -129,7 +201,7 @@ async function listarAlunos() {
     console.error(error);
     const aviso = document.createElement("p");
     aviso.className = "vazio";
-    aviso.textContent = "Erro ao carregar. Verifique a configuração, as permissões e os índices do Firestore.";
+    aviso.textContent = "Erro ao carregar. Verifique as regras do Firestore e a conexão.";
     lista.append(aviso);
   }
 }
@@ -147,6 +219,7 @@ function iniciarEdicao(id, aluno) {
 }
 
 async function excluirAluno(id) {
+  if (!auth.currentUser) return;
   if (!confirm("Deseja realmente excluir este aluno?")) return;
   try {
     await deleteDoc(doc(db, "alunos", id));
@@ -154,7 +227,7 @@ async function excluirAluno(id) {
     await listarAlunos();
   } catch (error) {
     console.error(error);
-    avisar("Não foi possível excluir o aluno. Confira as regras do Firestore.", true);
+    avisar("Não foi possível excluir. Confira as regras do Firestore.", true);
   }
 }
 
@@ -170,5 +243,3 @@ document.querySelector("#btnLimpar").addEventListener("click", () => {
 });
 document.querySelector("#filtroTurma").addEventListener("input", listarAlunos);
 document.querySelector("#filtroData").addEventListener("change", listarAlunos);
-
-listarAlunos();
