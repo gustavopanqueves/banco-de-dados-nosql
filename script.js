@@ -6,12 +6,13 @@ import {
 
 // 1. Substitua os valores abaixo pelas configurações do seu app Web no Firebase.
 const firebaseConfig = {
-  apiKey: "SUA_API_KEY",
-  authDomain: "SEU_PROJETO.firebaseapp.com",
-  projectId: "SEU_PROJECT_ID",
-  storageBucket: "SEU_PROJETO.firebasestorage.app",
-  messagingSenderId: "SEU_MESSAGING_SENDER_ID",
-  appId: "SEU_APP_ID"
+  apiKey: "AIzaSyCfNOef9zfZa-yB_906TJwOQ1fNRhBn0Zg",
+  authDomain: "nosql123-71837.firebaseapp.com",
+  projectId: "nosql123-71837",
+  storageBucket: "nosql123-71837.firebasestorage.app",
+  messagingSenderId: "902272618611",
+  appId: "1:902272618611:web:b7ee976e86136c88f29a06",
+  measurementId: "G-KZ8SCGWNJ8"
 };
 
 const app = initializeApp(firebaseConfig);
