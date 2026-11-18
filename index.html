@@ -3,39 +3,51 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Sistema didático de cadastro de alunos com Firebase Authentication e Firestore.">
-  <title>Sistema de Alunos | NoSQL</title>
+  <meta name="description" content="Sistema didático de alunos do Colégio Estadual Presidente Kennedy, conectado ao Firebase.">
+  <title>Sistema de Alunos | CEPK</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main class="container">
     <header class="topo">
-      <span class="tag">Banco de Dados NoSQL</span>
+      <img class="logo-cepk" src="logo-cepk.jpg" alt="Logotipo do Colégio Estadual Presidente Kennedy">
+      <span class="tag">Colégio Estadual Presidente Kennedy • Ponta Grossa - PR</span>
       <h1>Sistema de Alunos</h1>
-      <p>Projeto didático conectado ao Firebase</p>
+      <p>Gestão escolar • Projeto didático de Banco de Dados NoSQL</p>
     </header>
 
     <section class="painel login-painel" id="loginPainel">
-      <h2>Acessar o sistema</h2>
-      <p class="subtitulo">Entre com o e-mail e a senha cadastrados no Firebase Authentication.</p>
+      <div class="titulo-painel">
+        <span class="selo">CEPK</span>
+        <div>
+          <h2>Acessar o sistema</h2>
+          <p class="subtitulo">Entre com seu e-mail e senha cadastrados.</p>
+        </div>
+      </div>
       <form id="loginForm">
         <label for="email">E-mail</label>
         <input id="email" type="email" placeholder="seuemail@exemplo.com" autocomplete="username" required>
         <label for="senha">Senha</label>
         <input id="senha" type="password" placeholder="Sua senha" autocomplete="current-password" required>
-        <button class="primario botao-largo" id="btnEntrar" type="submit">Entrar</button>
+        <button class="primario botao-largo" id="btnEntrar" type="submit">Entrar no sistema</button>
       </form>
       <p id="mensagemLogin" class="mensagem" role="status"></p>
     </section>
 
     <div id="areaSistema" class="oculto">
       <div class="barra-conta">
-        <span>Você está conectado.</span>
+        <span><span class="ponto-online"></span> Acesso autorizado • Área administrativa</span>
         <button class="secundario" id="btnSair" type="button">Sair</button>
       </div>
 
       <section class="painel">
-        <h2 id="titulo-form">Cadastrar aluno</h2>
+        <div class="titulo-secao">
+          <span class="icone-secao">＋</span>
+          <div>
+            <h2 id="titulo-form">Cadastrar aluno</h2>
+            <p class="subtitulo">Preencha os dados para registrar um aluno.</p>
+          </div>
+        </div>
         <form id="formAluno">
           <input type="hidden" id="alunoId">
           <label for="nome">Nome</label>
@@ -63,10 +75,15 @@
       <section class="painel">
         <div class="cabecalho-lista">
           <div>
-            <h2>Alunos cadastrados</h2>
-            <p class="subtitulo">Consulte, edite ou exclua registros.</p>
+            <div class="titulo-secao">
+              <span class="icone-secao">▤</span>
+              <div>
+                <h2>Alunos cadastrados</h2>
+                <p class="subtitulo">Consulte, edite ou exclua registros.</p>
+              </div>
+            </div>
           </div>
-          <button class="secundario" id="btnAtualizar" type="button">Atualizar lista</button>
+          <button class="secundario" id="btnAtualizar" type="button">↻ Atualizar lista</button>
         </div>
 
         <div class="filtros">
@@ -87,7 +104,10 @@
       </section>
     </div>
 
-    <footer>Projeto didático • HTML, CSS, JavaScript, Firebase Authentication e Firestore</footer>
+    <footer>
+      <strong>CEPK • Colégio Estadual Presidente Kennedy</strong>
+      <span>Ponta Grossa – Paraná • Projeto didático de Banco de Dados NoSQL</span>
+    </footer>
   </main>
   <script type="module" src="script.js"></script>
 </body>
