@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Sistema simples de cadastro de alunos com Firebase Firestore.">
-  <title>Sistema de Alunos</title>
+  <meta name="description" content="Sistema didático de cadastro de alunos com Firebase Authentication e Firestore.">
+  <title>Sistema de Alunos | NoSQL</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,61 +12,82 @@
     <header class="topo">
       <span class="tag">Banco de Dados NoSQL</span>
       <h1>Sistema de Alunos</h1>
-      <p>Cadastro simples conectado ao Firebase Firestore</p>
+      <p>Projeto didático conectado ao Firebase</p>
     </header>
 
-    <section class="painel">
-      <h2 id="titulo-form">Cadastrar aluno</h2>
-      <form id="formAluno">
-        <input type="hidden" id="alunoId">
-        <label for="nome">Nome</label>
-        <input id="nome" type="text" placeholder="Nome do aluno" required maxlength="100">
-
-        <label for="turma">Turma</label>
-        <input id="turma" type="text" placeholder="Ex.: 3DSB" required maxlength="30">
-
-        <label for="dataNascimento">Data de nascimento</label>
-        <input id="dataNascimento" type="date" required>
-
-        <label class="check">
-          <input id="ativo" type="checkbox" checked>
-          Aluno ativo
-        </label>
-
-        <div class="acoes">
-          <button class="primario" id="btnSalvar" type="submit">Cadastrar aluno</button>
-          <button class="secundario oculto" id="btnCancelar" type="button">Cancelar edição</button>
-        </div>
+    <section class="painel login-painel" id="loginPainel">
+      <h2>Acessar o sistema</h2>
+      <p class="subtitulo">Entre com o e-mail e a senha cadastrados no Firebase Authentication.</p>
+      <form id="loginForm">
+        <label for="email">E-mail</label>
+        <input id="email" type="email" placeholder="seuemail@exemplo.com" autocomplete="username" required>
+        <label for="senha">Senha</label>
+        <input id="senha" type="password" placeholder="Sua senha" autocomplete="current-password" required>
+        <button class="primario botao-largo" id="btnEntrar" type="submit">Entrar</button>
       </form>
-      <p id="mensagem" class="mensagem" role="status"></p>
+      <p id="mensagemLogin" class="mensagem" role="status"></p>
     </section>
 
-    <section class="painel">
-      <div class="cabecalho-lista">
-        <div>
-          <h2>Alunos cadastrados</h2>
-          <p class="subtitulo">Consulte, edite ou exclua registros.</p>
-        </div>
-        <button class="secundario" id="btnAtualizar" type="button">Atualizar lista</button>
+    <div id="areaSistema" class="oculto">
+      <div class="barra-conta">
+        <span>Você está conectado.</span>
+        <button class="secundario" id="btnSair" type="button">Sair</button>
       </div>
 
-      <div class="filtros">
-        <div>
-          <label for="filtroTurma">Filtrar por turma</label>
-          <input id="filtroTurma" type="text" placeholder="Ex.: 3DSB">
-        </div>
-        <div>
-          <label for="filtroData">Data de nascimento</label>
-          <input id="filtroData" type="date">
-        </div>
-        <button class="secundario" id="btnLimpar" type="button">Limpar filtros</button>
-      </div>
+      <section class="painel">
+        <h2 id="titulo-form">Cadastrar aluno</h2>
+        <form id="formAluno">
+          <input type="hidden" id="alunoId">
+          <label for="nome">Nome</label>
+          <input id="nome" type="text" placeholder="Nome do aluno" required maxlength="100">
 
-      <div id="lista" class="lista">
-        <p class="vazio">Carregando alunos...</p>
-      </div>
-    </section>
-    <footer>Projeto didático • HTML, CSS, JavaScript e Firebase</footer>
+          <label for="turma">Turma</label>
+          <input id="turma" type="text" placeholder="Ex.: 3DSB" required maxlength="30">
+
+          <label for="dataNascimento">Data de nascimento</label>
+          <input id="dataNascimento" type="date" required>
+
+          <label class="check">
+            <input id="ativo" type="checkbox" checked>
+            Aluno ativo
+          </label>
+
+          <div class="acoes">
+            <button class="primario" id="btnSalvar" type="submit">Cadastrar aluno</button>
+            <button class="secundario oculto" id="btnCancelar" type="button">Cancelar edição</button>
+          </div>
+        </form>
+        <p id="mensagem" class="mensagem" role="status"></p>
+      </section>
+
+      <section class="painel">
+        <div class="cabecalho-lista">
+          <div>
+            <h2>Alunos cadastrados</h2>
+            <p class="subtitulo">Consulte, edite ou exclua registros.</p>
+          </div>
+          <button class="secundario" id="btnAtualizar" type="button">Atualizar lista</button>
+        </div>
+
+        <div class="filtros">
+          <div>
+            <label for="filtroTurma">Filtrar por turma</label>
+            <input id="filtroTurma" type="text" placeholder="Ex.: 3DSB">
+          </div>
+          <div>
+            <label for="filtroData">Data de nascimento</label>
+            <input id="filtroData" type="date">
+          </div>
+          <button class="secundario" id="btnLimpar" type="button">Limpar filtros</button>
+        </div>
+
+        <div id="lista" class="lista">
+          <p class="vazio">Carregando alunos...</p>
+        </div>
+      </section>
+    </div>
+
+    <footer>Projeto didático • HTML, CSS, JavaScript, Firebase Authentication e Firestore</footer>
   </main>
   <script type="module" src="script.js"></script>
 </body>
