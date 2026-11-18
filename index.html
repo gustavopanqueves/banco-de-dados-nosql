@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sistema simples de cadastro de alunos com Firebase Firestore.">
+  <title>Sistema de Alunos</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="container">
+    <header class="topo">
+      <span class="tag">Banco de Dados NoSQL</span>
+      <h1>Sistema de Alunos</h1>
+      <p>Cadastro simples conectado ao Firebase Firestore</p>
+    </header>
+
+    <section class="painel">
+      <h2 id="titulo-form">Cadastrar aluno</h2>
+      <form id="formAluno">
+        <input type="hidden" id="alunoId">
+        <label for="nome">Nome</label>
+        <input id="nome" type="text" placeholder="Nome do aluno" required maxlength="100">
+
+        <label for="turma">Turma</label>
+        <input id="turma" type="text" placeholder="Ex.: 3DSB" required maxlength="30">
+
+        <label for="dataNascimento">Data de nascimento</label>
+        <input id="dataNascimento" type="date" required>
+
+        <label class="check">
+          <input id="ativo" type="checkbox" checked>
+          Aluno ativo
+        </label>
+
+        <div class="acoes">
+          <button class="primario" id="btnSalvar" type="submit">Cadastrar aluno</button>
+          <button class="secundario oculto" id="btnCancelar" type="button">Cancelar edição</button>
+        </div>
+      </form>
+      <p id="mensagem" class="mensagem" role="status"></p>
+    </section>
+
+    <section class="painel">
+      <div class="cabecalho-lista">
+        <div>
+          <h2>Alunos cadastrados</h2>
+          <p class="subtitulo">Consulte, edite ou exclua registros.</p>
+        </div>
+        <button class="secundario" id="btnAtualizar" type="button">Atualizar lista</button>
+      </div>
+
+      <div class="filtros">
+        <div>
+          <label for="filtroTurma">Filtrar por turma</label>
+          <input id="filtroTurma" type="text" placeholder="Ex.: 3DSB">
+        </div>
+        <div>
+          <label for="filtroData">Data de nascimento</label>
+          <input id="filtroData" type="date">
+        </div>
+        <button class="secundario" id="btnLimpar" type="button">Limpar filtros</button>
+      </div>
+
+      <div id="lista" class="lista">
+        <p class="vazio">Carregando alunos...</p>
+      </div>
+    </section>
+    <footer>Projeto didático • HTML, CSS, JavaScript e Firebase</footer>
+  </main>
+  <script type="module" src="script.js"></script>
+</body>
+</html>
